@@ -87,10 +87,7 @@ int		parse(t_lem **origin)
 			graph->next = (t_lem*)malloc(sizeof(t_lem));
 			graph = graph->next;
 		}
-		else
-			free(graph);
 	}
-	graph = NULL;
 	parse_dop(origin, tmp);
 	return (res);
 }
