@@ -12,11 +12,11 @@
 
 #include "../include/lem.h"
 
-t_lem	*get_elem(t_lem *graph, int id)
+t_lem	*get_elem(t_lem *graph, char *id)
 {
 	while (graph != NULL)
 	{
-		if (graph->id == id)
+		if (!ft_strncmp(id, graph->id, ft_strlen(id)))
 			break;
 		graph = graph->next;
 	}
@@ -33,12 +33,21 @@ void	parse_dop(t_lem **graph, char *tmp)
 	while (tmp)
 	{
 		tmp2 = ft_strsplit(tmp, '-');
-		elem1 = get_elem(*graph, ft_atoi(tmp2[0]));
-		elem2 = get_elem(*graph, ft_atoi(tmp2[1]));
+		elem1 = get_elem(*graph, tmp2[0]);
+		elem2 = get_elem(*graph, tmp2[1]);
 		ptr = elem1->nbr;
-		while (ptr != NULL)
+		if (ptr == NULL)
+		{
+			elem1->nbr = (t_ptr*)malloc(sizeof(t_ptr));
+			ptr = elem1->nbr;
+		}
+		else
+		{
+			while (ptr->next != NULL)
+				ptr = ptr->next;
+			ptr->next = (t_ptr*)malloc(sizeof(t_ptr));
 			ptr = ptr->next;
-		ptr = (t_ptr*)malloc(sizeof(t_ptr));
+		}
 		ptr->ptr = elem2;
 		ptr->next = NULL;
 		free(tmp);
@@ -70,7 +79,8 @@ int		parse(t_lem **origin)
 		if (!ft_strchr(tmp, '-'))
 		{
 			tmp2 = ft_strsplit(tmp, ' ');
-			graph->id = ft_atoi(tmp2[0]);
+			graph->id = ft_strnew(ft_strlen(tmp2[0]));
+			ft_strcpy(graph->id, tmp2[0]);
 			graph->x = ft_atoi(tmp2[1]);
 			graph->y = ft_atoi(tmp2[2]);
 			graph->nbr = NULL;
@@ -85,20 +95,15 @@ int		parse(t_lem **origin)
 	return (res);
 }
 
-int		main(void)
+void	print_farm(t_lem *graph)
 {
-	t_lem	*graph;
-	int		aints;
 	t_lem	*ptr2;
 	t_ptr	*tmp;
 
-	graph = (t_lem*)malloc(sizeof(t_lem));
-	aints = parse(&graph);
-	printf("Aints = %d\n", aints);
 	while (graph != NULL)
 	{
 		printf("________________________________\n");
-		printf("ID = %d\n", graph->id);
+		printf("ID = %s\n", graph->id);
 		printf("Flag = %c\n", graph->flag);
 		printf("x = %d\n", graph->x);
 		printf("y = %d\n", graph->y);
@@ -106,10 +111,21 @@ int		main(void)
 		while (tmp != NULL)
 		{
 			ptr2 = tmp->ptr;
-			printf("NBR_id = %d\n", ptr2->id);
+			printf("NBR_id = %s\n", ptr2->id);
 			tmp = tmp->next;
 		}
 		graph = graph->next;
 	}
+}
+
+int		main(void)
+{
+	t_lem	*graph;
+	int		aints;
+
+	graph = (t_lem*)malloc(sizeof(t_lem));
+	aints = parse(&graph);
+	printf("Aints = %d\n", aints);
+	print_farm(graph);
 	return (0);
 }

@@ -27,7 +27,7 @@ typedef	struct 	s_ptr
 
 struct 			s_lem
 {
-	int			id;
+	char		*id;
 	int			x;
 	int			y;
 	char		flag;

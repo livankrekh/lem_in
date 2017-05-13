@@ -21,7 +21,7 @@ FLAGS = -Wall -Wextra -Werror
 all: $(NAME1)
 
 $(NAME1): $(LIB) $(SRC:.c=.o)
-	$(CC) -o $(NAME1) $(LIB) $(SRC:.c=.o) $(FLAGS) -g
+	$(CC) -o $(NAME1) $(SRC:.c=.o) $(FLAGS) $(LIB)
 	
 $(LIB):
 	make -C ./libft
@@ -31,9 +31,9 @@ $(LIB):
 
 clean:
 	make clean -C ./libft
-	rm -f $(SRC:.c=.o) $(MAIN1:.c=.o) $(MAIN2:.c=.o)
+	rm -f $(SRC:.c=.o) $(MAIN1:.c=.o)
 
 fclean: clean
-	rm -f $(LIB) $(NAME1) $(NAME2)
+	rm -f $(LIB) $(NAME1)
 	
 re: fclean all
