@@ -12,7 +12,7 @@
 
 NAME1 = lem_in
 CC = gcc
-SRC = src/lem.c
+SRC = src/lem.c src/valid.c
 LIB = libft/libft.a
 FLAGS = -Wall -Wextra -Werror
 
@@ -21,7 +21,7 @@ FLAGS = -Wall -Wextra -Werror
 all: $(NAME1)
 
 $(NAME1): $(LIB) $(SRC:.c=.o)
-	$(CC) -o $(NAME1) $(SRC:.c=.o) $(FLAGS) $(LIB)
+	$(CC) -o $(NAME1) $(LIB) $(SRC:.c=.o) $(FLAGS) -g
 	
 $(LIB):
 	make -C ./libft
@@ -31,9 +31,9 @@ $(LIB):
 
 clean:
 	make clean -C ./libft
-	rm -f $(SRC:.c=.o) $(MAIN1:.c=.o)
+	rm -f $(SRC:.c=.o) $(MAIN1:.c=.o) $(MAIN2:.c=.o)
 
 fclean: clean
-	rm -f $(LIB) $(NAME1)
+	rm -f $(LIB) $(NAME1) $(NAME2)
 	
 re: fclean all
