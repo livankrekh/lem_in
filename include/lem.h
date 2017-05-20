@@ -30,9 +30,12 @@ struct 			s_lem
 	char		*id;
 	int			x;
 	int			y;
+	int			aints;
 	char		flag;
 	t_ptr		*nbr;
 	void		*next;
 };
+
+int		test(t_lem *graph);
 
 #endif
