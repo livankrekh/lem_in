@@ -12,11 +12,23 @@
 
 #include "../include/lem.h"
 
+int		is_exist(char **arr, int i)
+{
+	int		j;
+
+	j = 0;
+	while (arr[j] != NULL)
+		j++;
+	if (i < j)
+		return (1);
+	return (0);
+}
+
 t_lem	*get_elem(t_lem *graph, char *id)
 {
 	while (graph != NULL)
 	{
-		if (!ft_strncmp(id, graph->id, ft_strlen(id)))
+		if (!ft_strcmp(id, graph->id))
 			break;
 		graph = graph->next;
 	}
@@ -35,61 +47,93 @@ void	parse_dop(t_lem **graph, char *tmp)
 		tmp2 = ft_strsplit(tmp, '-');
 		elem1 = get_elem(*graph, tmp2[0]);
 		elem2 = get_elem(*graph, tmp2[1]);
-		ptr = elem1->nbr;
-		if (ptr == NULL)
+		if (elem1 != NULL && elem2 != NULL)
 		{
-			elem1->nbr = (t_ptr*)malloc(sizeof(t_ptr));
 			ptr = elem1->nbr;
-		}
-		else
-		{
-			while (ptr->next != NULL)
+			if (ptr == NULL)
+			{
+				elem1->nbr = (t_ptr*)malloc(sizeof(t_ptr));
+				ptr = elem1->nbr;
+			}
+			else if (elem2 != NULL)
+			{
+				while (ptr->next != NULL)
+					ptr = ptr->next;
+				ptr->next = (t_ptr*)malloc(sizeof(t_ptr));
 				ptr = ptr->next;
-			ptr->next = (t_ptr*)malloc(sizeof(t_ptr));
-			ptr = ptr->next;
+			}
+			ptr->ptr = elem2;
+			ptr->next = NULL;
 		}
-		ptr->ptr = elem2;
-		ptr->next = NULL;
 		free(tmp);
 		tmp = NULL;
 		get_next_line(0, &tmp);
 	}
 }
 
-int		parse(t_lem **origin)
+t_lem	*parse()
 {
 	int		res;
 	char	**tmp2;
 	char	*tmp;
+	t_lem	*start;
 	t_lem	*graph;
 
 	get_next_line(0, &tmp);
+	if (ft_strchr(tmp, '-'))
+		return (NULL);
 	res = ft_atoi(tmp);
-	graph = *origin;
-	while (!ft_strchr(tmp, '-'))
+	start = NULL;
+	graph = start;
+	while (!ft_strchr(tmp, '-') || ft_strchr(tmp, ' '))
 	{
 		free(tmp);
 		get_next_line(0, &tmp);
+		while ((tmp[0] == '#' && tmp[1] != '#') || tmp[0] == 'L')
+		{
+			free(tmp);
+			get_next_line(0, &tmp);
+		}
+		if (!ft_strchr(tmp, '-'))
+		{
+			if (graph == NULL)
+			{
+				start = (t_lem*)malloc(sizeof(t_lem));
+				graph = start;
+			}
+			else
+			{
+				graph->next = (t_lem*)malloc(sizeof(t_lem));
+				graph = graph->next;
+			}
+		}
 		if (ft_strnstr(tmp, "##", 2))
 		{
 			graph->flag = tmp[2];
 			free(tmp);
 			get_next_line(0, &tmp);
 		}
-		if (!ft_strchr(tmp, '-'))
+		while ((tmp[0] == '#' && tmp[1] != '#') || tmp[0] == 'L')
+		{
+			free(tmp);
+			get_next_line(0, &tmp);
+		}
+		if (!ft_strchr(tmp, '-') && tmp[0] != '#' && tmp[0] != '\n')
 		{
 			tmp2 = ft_strsplit(tmp, ' ');
+			if (is_exist(tmp2, 0) == 0 || is_exist(tmp2, 1) == 0 || is_exist(tmp2, 2) == 0)
+				return (NULL);
 			graph->id = ft_strnew(ft_strlen(tmp2[0]));
 			ft_strcpy(graph->id, tmp2[0]);
-			graph->x = ft_atoi(tmp2[1]);
-			graph->y = ft_atoi(tmp2[2]);
+			graph->x = (is_exist(tmp2, 1) == 1) ? ft_atoi(tmp2[1]) : 0;
+			graph->y = (is_exist(tmp2, 2) == 1) ? ft_atoi(tmp2[2]) : 0;
 			graph->nbr = NULL;
-			graph->next = (t_lem*)malloc(sizeof(t_lem));
-			graph = graph->next;
+			graph->aints = (graph->flag == 's') ? res : 0;
 		}
 	}
-	parse_dop(origin, tmp);
-	return (res);
+	graph->next = NULL;
+	parse_dop(&start, tmp);
+	return (start);
 }
 
 void	print_farm(t_lem *graph)
@@ -118,11 +162,16 @@ void	print_farm(t_lem *graph)
 int		main(void)
 {
 	t_lem	*graph;
-	int		aints;
 
-	graph = (t_lem*)malloc(sizeof(t_lem));
-	aints = parse(&graph);
-	printf("Aints = %d\n", aints);
-	print_farm(graph);
+	if ((graph = parse()) == NULL)
+	{
+		ft_putstr("Error\n");
+		return (0);
+	}
+	if (test(graph) == 1)
+		ft_putstr("Error\n");
+	else
+		ft_putstr("OK\n");
+	//print_farm(graph);
 	return (0);
 }
