@@ -85,40 +85,28 @@ t_lem	*parse()
 	res = ft_atoi(tmp);
 	start = NULL;
 	graph = start;
-	while (!ft_strchr(tmp, '-') || ft_strchr(tmp, ' '))
+	free(tmp);
+	get_next_line(0, &tmp);
+	while (ft_strchr(tmp, ' ') || tmp[0] == '#')
 	{
-		free(tmp);
-		get_next_line(0, &tmp);
-		while ((tmp[0] == '#' && tmp[1] != '#') || tmp[0] == 'L')
+		if (graph == NULL)
 		{
+			start = (t_lem*)malloc(sizeof(t_lem));
+			graph = start;
+		}
+		else
+		{
+			graph->next = (t_lem*)malloc(sizeof(t_lem));
+			graph = graph->next;
+		}
+		while (tmp[0] == '#')
+		{
+			if (tmp[1] == '#')
+				graph->flag = (ft_strstr(tmp, "start") || ft_strstr(tmp, "end")) ? tmp[2] : '\0';
 			free(tmp);
 			get_next_line(0, &tmp);
 		}
-		if (!ft_strchr(tmp, '-'))
-		{
-			if (graph == NULL)
-			{
-				start = (t_lem*)malloc(sizeof(t_lem));
-				graph = start;
-			}
-			else
-			{
-				graph->next = (t_lem*)malloc(sizeof(t_lem));
-				graph = graph->next;
-			}
-		}
-		if (ft_strnstr(tmp, "##", 2))
-		{
-			graph->flag = tmp[2];
-			free(tmp);
-			get_next_line(0, &tmp);
-		}
-		while ((tmp[0] == '#' && tmp[1] != '#') || tmp[0] == 'L')
-		{
-			free(tmp);
-			get_next_line(0, &tmp);
-		}
-		if (!ft_strchr(tmp, '-') && tmp[0] != '#' && tmp[0] != '\n')
+		if (ft_strchr(tmp, ' '))
 		{
 			tmp2 = ft_strsplit(tmp, ' ');
 			if (is_exist(tmp2, 0) == 0 || is_exist(tmp2, 1) == 0 || is_exist(tmp2, 2) == 0)
@@ -128,7 +116,10 @@ t_lem	*parse()
 			graph->x = (is_exist(tmp2, 1) == 1) ? ft_atoi(tmp2[1]) : 0;
 			graph->y = (is_exist(tmp2, 2) == 1) ? ft_atoi(tmp2[2]) : 0;
 			graph->nbr = NULL;
+			graph->flag = (graph->flag != 's' && graph->flag != 'e') ? '\0' : graph->flag;
 			graph->aints = (graph->flag == 's') ? res : 0;
+			free(tmp);
+			get_next_line(0, &tmp);
 		}
 	}
 	graph->next = NULL;
@@ -172,6 +163,6 @@ int		main(void)
 		ft_putstr("Error\n");
 	else
 		ft_putstr("OK\n");
-	//print_farm(graph);
+	print_farm(graph);
 	return (0);
 }
