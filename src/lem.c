@@ -116,6 +116,7 @@ t_lem	*parse()
 			graph->x = (is_exist(tmp2, 1) == 1) ? ft_atoi(tmp2[1]) : 0;
 			graph->y = (is_exist(tmp2, 2) == 1) ? ft_atoi(tmp2[2]) : 0;
 			graph->nbr = NULL;
+			graph->visited = 0;
 			graph->flag = (graph->flag != 's' && graph->flag != 'e') ? '\0' : graph->flag;
 			graph->aints = (graph->flag == 's') ? res : 0;
 			free(tmp);
@@ -159,10 +160,13 @@ int		main(void)
 		ft_putstr("Error\n");
 		return (0);
 	}
+	//print_farm(graph);
 	if (test(graph) == 1)
 		ft_putstr("Error\n");
 	else
+	{
 		ft_putstr("OK\n");
-	print_farm(graph);
+		get_path(graph);
+	}
 	return (0);
 }
