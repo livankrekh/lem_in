@@ -28,14 +28,17 @@ typedef	struct 	s_ptr
 struct 			s_lem
 {
 	char		*id;
+	int			ide;
 	int			x;
 	int			y;
 	int			aints;
+	int			visited;
 	char		flag;
 	t_ptr		*nbr;
 	void		*next;
 };
 
-int		test(t_lem *graph);
+int				test(t_lem *graph);
+void			get_path(t_lem *graph);
 
 #endif
