@@ -14,17 +14,25 @@
 
 int		test2(t_lem *graph)
 {
-	t_lem	*ptr;
+	t_lem	*tmp;
+	t_ptr	*nbr;
 
-	ptr = graph;
-	while (ptr != NULL)
+	tmp = graph;
+	while (tmp != NULL)
 	{
-		if (ptr->flag == 's')
-			if (ptr->aints < 0)
+		nbr = tmp->nbr;
+		while (nbr != NULL)
+		{
+			if (nbr->ptr->id == tmp->id)
 				return (1);
-		if (ptr->id[0] == '#')
+			nbr = nbr->next;
+		}
+		if (tmp->flag == 's')
+			if (tmp->aints < 1)
+				return (1);
+		if (tmp->id[0] == '#')
 			return (1);
-		ptr = ptr->next;
+		tmp = tmp->next;
 	}
 	return (0);
 }
