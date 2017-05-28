@@ -116,6 +116,7 @@ void	find_path(t_lem *graph, int **path, int *p)
 	while (path[*p][i] != -1)
 		i++;
 	path[*p][i] = graph->ide;
+	printf("Enter in %s (#%d)\n", tmp->id, tmp->ide);
 	if (tmp->flag == 'e')
 	{
 		(*p)++;
@@ -141,12 +142,14 @@ void	find_path(t_lem *graph, int **path, int *p)
 	return ;
 }
 
-void	get_path(t_lem *graph)
+int		**get_path(t_lem *graph)
 {
 	int		p;
 	t_lem	*tmp;
 	int		**road;
+	int		i;
 
+	i = 0;
 	tmp = graph;
 	p = 0;
 	while (tmp != NULL && tmp->flag != 's')
@@ -155,4 +158,7 @@ void	get_path(t_lem *graph)
 	road = new_path();
 	find_path(tmp, road, &p);
 	print_path(road, p, graph);
+	while (road[p][i] != -1)
+		road[p][i++] = -1;
+	return (road);
 }

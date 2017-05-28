@@ -44,6 +44,11 @@ void	parse_dop(t_lem **graph, char *tmp)
 
 	while (tmp && graph && tmp[0] != '\0')
 	{
+		while (tmp[0] == '#' && tmp[1] != '#')
+		{
+			free(tmp);
+			get_next_line(0, &tmp);
+		}
 		tmp2 = ft_strsplit(tmp, '-');
 		elem1 = get_elem(*graph, tmp2[0]);
 		elem2 = get_elem(*graph, tmp2[1]);
@@ -174,7 +179,9 @@ void	print_farm(t_lem *graph)
 int		main(void)
 {
 	t_lem	*graph;
+	int		**path;
 
+	path = NULL;
 	if ((graph = parse()) == NULL)
 	{
 		ft_putstr("Error\n");
@@ -186,7 +193,8 @@ int		main(void)
 	else
 	{
 		ft_putstr("OK\n");
-		get_path(graph);
+		path = get_path(graph);
 	}
+	lets_go(path, graph);
 	return (0);
 }
