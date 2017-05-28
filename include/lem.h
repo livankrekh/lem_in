@@ -39,7 +39,9 @@ struct 			s_lem
 };
 
 int				test(t_lem *graph);
-void			get_path(t_lem *graph);
+int				**get_path(t_lem *graph);
 void			print_farm(t_lem *graph);
+void			lets_go(int **path, t_lem *graph);
+void			print_path(int **road, int p, t_lem *graph);
 
 #endif
