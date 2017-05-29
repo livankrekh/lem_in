@@ -58,7 +58,7 @@ void	arr_dop(int **path, int *p, int id)
 	int		i;
 
 	i = 0;
-	while (i < 10000)
+	while (i < 100000)
 		path[*p][i++] = -1;
 	i = 0;
 	while (path[*p - 1][i] != -1 && path[*p - 1][i] != id)
@@ -102,7 +102,27 @@ void	print_path(int **road, int p, t_lem *graph)
 	printf("\n");
 }
 
-void	find_path(t_lem *graph, int **path, int *p)
+int		size_line(int *line)
+{
+	int		i;
+
+	i = 0;
+	while (line[i] != -1 && i < 10000)
+		i++;
+	return (i);
+}
+
+int		size_arr(int **arr)
+{
+	int		res;
+
+	res = 0;
+	while (arr[res] != NULL && res < 100000)
+		res++;
+	return (res);
+}
+
+void	find_path(t_lem *graph, int **path, int *p) // Need to correct
 {
 	t_lem	*tmp;
 	t_ptr	*nbr;
@@ -116,7 +136,6 @@ void	find_path(t_lem *graph, int **path, int *p)
 	while (path[*p][i] != -1)
 		i++;
 	path[*p][i] = graph->ide;
-	printf("Enter in %s (#%d)\n", tmp->id, tmp->ide);
 	if (tmp->flag == 'e')
 	{
 		(*p)++;
@@ -130,6 +149,13 @@ void	find_path(t_lem *graph, int **path, int *p)
 		if (nbr != NULL && nbr->ptr != NULL)
 		{
 			find_path(nbr->ptr, path, p);
+			if (size_line(path[*p]) > get_min(path) + 20 && graph->flag != 's')
+			{
+				path[*p][i] = -1;
+				return ;
+			}
+			if (size_arr(path) > 1000)
+				return ;
 			if (tmp->flag == 's')
 				clear_visit(graph);
 			if (nbr->ptr->flag == 'e')
@@ -139,6 +165,7 @@ void	find_path(t_lem *graph, int **path, int *p)
 			nbr = nbr->next;
 		}
 	}
+	graph->visited = 0;
 	return ;
 }
 
@@ -148,8 +175,10 @@ int		**get_path(t_lem *graph)
 	t_lem	*tmp;
 	int		**road;
 	int		i;
+	int		j;
 
 	i = 0;
+	j = 0;
 	tmp = graph;
 	p = 0;
 	while (tmp != NULL && tmp->flag != 's')
@@ -157,8 +186,10 @@ int		**get_path(t_lem *graph)
 	index_graph(graph);
 	road = new_path();
 	find_path(tmp, road, &p);
-	print_path(road, p, graph);
-	while (road[p][i] != -1)
-		road[p][i++] = -1;
+	while (road[j] != NULL)
+		j++;
+	free(road[--j]);
+	road[j] = NULL;
+	print_path(road, --p, graph);
 	return (road);
 }

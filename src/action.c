@@ -22,10 +22,10 @@ int		get_min(int **path)
 	res = 0;
 	min = 100000;
 	curr = 0;
-	while (path[curr] != NULL)
+	while (path[curr] != NULL && curr < 100000)
 	{
 		i = 0;
-		while (path[curr][i] != -1)
+		while (path[curr][i] != -1 && i < 10000)
 			i++;
 		if (i < min && i != 0)
 		{
@@ -49,7 +49,6 @@ void	copy_path(int **new, int *path)
 	while (path[j] != -1)
 		j++;
 	new[i] = (int*)malloc(sizeof(int) * (j + 1));
-	i = 0;
 	j = 0;
 	while (path[j] != -1)
 	{
@@ -59,7 +58,7 @@ void	copy_path(int **new, int *path)
 	new[i][j] = -1;
 }
 
-int		compare(int *comp, int *origin) // Need to correct
+int		compare(int *comp, int *origin)
 {
 	int		i;
 	int		j;
@@ -85,10 +84,12 @@ int		**go_path(int **path, int rathio)
 	int		i;
 	int		min;
 	int		count;
+	int		j;
 
 	i = 0;
 	min = 0;
 	count = 0;
+	j = 0;
 	new = (int**)malloc(sizeof(int*) * 1000);
 	while (path[rathio][min] != -1)
 		min++;
@@ -109,13 +110,21 @@ void	lets_go(int **path, t_lem *graph)
 {
 	int		rathio;
 	int		**new_roads;
-	int		p;
+	int		i;
+	int		j;
 
-	p = 0;
+	i = 0;
 	rathio = get_min(path);
 	new_roads = go_path(path, rathio);
-	while (new_roads[p] != NULL)
-		p++;
-	p--;
-	print_path(new_roads, p, graph);
+	graph = NULL;
+	// valid_road(new_roads);
+	while (new_roads[i] != NULL)
+	{
+		j = 0;
+		printf("#%d\n", i);
+		while (new_roads[i][j] != -1)
+			printf("%d ", new_roads[i][j++]);
+		printf("\n");
+		i++;
+	}
 }

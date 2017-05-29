@@ -35,6 +35,27 @@ t_lem	*get_elem(t_lem *graph, char *id)
 	return (graph);
 }
 
+int		redublication(t_lem *elem1, t_lem *elem2)
+{
+	t_ptr	*tmp;
+
+	tmp = elem1->nbr;
+	while (tmp != NULL)
+	{
+		if (tmp->ptr == elem2)
+			return (1);
+		tmp = tmp->next;
+	}
+	tmp = elem2->nbr;
+	while (tmp != NULL)
+	{
+		if (tmp->ptr == elem1)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 void	parse_dop(t_lem **graph, char *tmp)
 {
 	t_lem	*elem1;
@@ -52,7 +73,7 @@ void	parse_dop(t_lem **graph, char *tmp)
 		tmp2 = ft_strsplit(tmp, '-');
 		elem1 = get_elem(*graph, tmp2[0]);
 		elem2 = get_elem(*graph, tmp2[1]);
-		if (elem1 != NULL && elem2 != NULL)
+		if (elem1 != NULL && elem2 != NULL && redublication(elem1, elem2) == 0)
 		{
 			ptr = elem1->nbr;
 			if (ptr == NULL)
