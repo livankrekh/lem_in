@@ -63,7 +63,7 @@ void	parse_dop(t_lem **graph, char *tmp)
 	t_ptr	*ptr;
 	char	**tmp2;
 
-	while (tmp && graph && tmp[0] != '\0')
+	while (tmp && *graph && tmp[0] != '\0')
 	{
 		while (tmp[0] == '#' && tmp[1] != '#')
 		{
@@ -120,15 +120,14 @@ t_lem	*parse()
 	t_lem	*start;
 	t_lem	*graph;
 
-	get_next_line(0, &tmp);
-	if (tmp[0] == '\0' || ft_strchr(tmp, '-') || ft_strchr(tmp, ' '))
+	if (get_next_line(0, &tmp) < 1 || tmp[0] == '\n' || ft_strchr(tmp, '-') || ft_strchr(tmp, ' '))
 		return (NULL);
 	res = ft_atoi(tmp);
 	start = NULL;
 	graph = start;
 	free(tmp);
 	get_next_line(0, &tmp);
-	while (ft_strchr(tmp, ' ') || tmp[0] == '#')
+	while (ft_strchr(tmp, ' ') || (tmp[0] == '#'))
 	{
 		if (graph == NULL)
 		{
@@ -164,6 +163,23 @@ t_lem	*parse()
 			graph->aints = (graph->flag == 's') ? res : 0;
 			free(tmp);
 			get_next_line(0, &tmp);
+		}
+		else
+		{
+			graph->next = NULL;
+			graph = start;
+			if (graph != NULL && graph->next != NULL)
+			{
+				while (graph->next->next != NULL)
+					graph = graph->next;
+				free(graph->next);
+				graph->next = NULL;
+			}
+			else
+			{
+				free(start);
+				start = NULL;
+			}
 		}
 	}
 	if (start != NULL && graph != NULL)
@@ -201,6 +217,7 @@ int		main(void)
 {
 	t_lem	*graph;
 	int		**path;
+	t_lem	*tmp;
 
 	path = NULL;
 	if ((graph = parse()) == NULL)
@@ -215,7 +232,10 @@ int		main(void)
 	{
 		ft_putstr("OK\n");
 		path = get_path(graph);
+		tmp = graph;
+		while (tmp->flag != 's' && tmp != NULL)
+			tmp = tmp->next;
+		lets_go(path, graph, tmp->aints);
 	}
-	lets_go(path, graph);
 	return (0);
 }

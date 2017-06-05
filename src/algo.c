@@ -58,7 +58,7 @@ void	arr_dop(int **path, int *p, int id)
 	int		i;
 
 	i = 0;
-	while (i < 100000)
+	while (i < 10000)
 		path[*p][i++] = -1;
 	i = 0;
 	while (path[*p - 1][i] != -1 && path[*p - 1][i] != id)
@@ -149,15 +149,15 @@ void	find_path(t_lem *graph, int **path, int *p) // Need to correct
 		if (nbr != NULL && nbr->ptr != NULL)
 		{
 			find_path(nbr->ptr, path, p);
-			if (size_line(path[*p]) > get_min(path) + 20 && graph->flag != 's')
+			if (tmp->flag == 's')
+			 	clear_visit(graph);
+			if (size_line(path[*p]) > size_line(path[get_min(path)]) + 2 && graph->flag != 's')
 			{
 				path[*p][i] = -1;
 				return ;
 			}
-			if (size_arr(path) > 1000)
+			if (size_arr(path) > 97000)
 				return ;
-			if (tmp->flag == 's')
-				clear_visit(graph);
 			if (nbr->ptr->flag == 'e')
 				arr_dop(path, p, nbr->ptr->ide);
 			else
@@ -165,6 +165,7 @@ void	find_path(t_lem *graph, int **path, int *p) // Need to correct
 			nbr = nbr->next;
 		}
 	}
+	path[*p][i] = -1;
 	graph->visited = 0;
 	return ;
 }
