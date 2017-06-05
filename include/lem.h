@@ -18,6 +18,8 @@
 # include <stdio.h>
 
 typedef	struct s_lem t_lem;
+typedef	struct s_group t_group;
+typedef	struct s_road t_road;
 
 typedef	struct 	s_ptr
 {
@@ -35,13 +37,25 @@ struct 			s_lem
 	int			visited;
 	char		flag;
 	t_ptr		*nbr;
-	void		*next;
+	t_lem		*next;
+};
+
+struct 	s_road
+{
+	int		*path;
+	t_road	*next;
+};
+
+struct 	s_group
+{
+	t_road	*group;
+	t_group	*next;
 };
 
 int				test(t_lem *graph);
 int				**get_path(t_lem *graph);
 void			print_farm(t_lem *graph);
-void			lets_go(int **path, t_lem *graph);
+void			lets_go(int **path, t_lem *graph, int aints);
 void			print_path(int **road, int p, t_lem *graph);
 int				get_min(int **path);
 
