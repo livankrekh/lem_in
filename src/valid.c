@@ -12,6 +12,43 @@
 
 #include "../include/lem.h"
 
+int		subtest(char *id, t_lem *graph)
+{
+	int		res;
+
+	res = 0;
+	while (graph != NULL)
+	{
+		if (!ft_strcmp(id, graph->id))
+			res++;
+		graph = graph->next;
+	}
+	return (res);
+}
+
+int		test3(t_lem *graph)
+{
+	t_lem	*tmp;
+
+	tmp = graph;
+	while (tmp != NULL)
+	{
+		if (subtest(tmp->id, graph) > 1)
+			return (1);
+		tmp = tmp->next;
+	}
+	tmp = graph;
+	while (tmp != NULL)
+	{
+		if (ft_strchr(tmp->id, '-'))
+			return (1);
+		if (tmp->flag == 'e' && tmp->nbr == NULL)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 int		test2(t_lem *graph)
 {
 	t_lem	*tmp;
@@ -34,7 +71,7 @@ int		test2(t_lem *graph)
 			return (1);
 		tmp = tmp->next;
 	}
-	return (0);
+	return (test3(graph));
 }
 
 int		test(t_lem *graph)

@@ -107,6 +107,8 @@ int		size_line(int *line)
 	int		i;
 
 	i = 0;
+	if (line == NULL)
+		return (0);
 	while (line[i] != -1 && i < 10000)
 		i++;
 	return (i);
@@ -122,7 +124,7 @@ int		size_arr(int **arr)
 	return (res);
 }
 
-void	find_path(t_lem *graph, int **path, int *p) // Need to correct
+void	find_path(t_lem *graph, int **path, int *p)
 {
 	t_lem	*tmp;
 	t_ptr	*nbr;
@@ -191,6 +193,5 @@ int		**get_path(t_lem *graph)
 		j++;
 	free(road[--j]);
 	road[j] = NULL;
-	print_path(road, --p, graph);
 	return (road);
 }
