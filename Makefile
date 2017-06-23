@@ -12,7 +12,7 @@
 
 NAME1 = lem_in
 CC = gcc
-SRC = src/lem.c src/valid.c src/algo.c src/action.c
+SRC = src/lem.c src/valid.c src/algo.c src/action.c src/go.c
 LIB = libft/libft.a
 FLAGS = -Wall -Wextra -Werror
 
