@@ -12,47 +12,6 @@
 
 #include "../include/lem.h"
 
-int		*new_row(void)
-{
-	int		i;
-	int		*res;
-
-	i = 0;
-	res = (int*)malloc(sizeof(int) * 10000);
-	while (i < 10000)
-		res[i++] = -1;
-	return (res);
-}
-
-int		**new_path(void)
-{
-	int		**tmp;
-	int		i;
-
-	i = 0;
-	tmp = (int**)malloc(sizeof(int*) * 100000);
-	while (i < 100000)
-		tmp[i++] = NULL;
-	tmp[0] = (int*)malloc(sizeof(int) * 10000);
-	i = 0;
-	while (i < 10000)
-		tmp[0][i++] = -1;
-	return (tmp);
-}
-
-void	index_graph(t_lem *graph)
-{
-	int		i;
-
-	i = 0;
-	while (graph != NULL)
-	{
-		graph->ide = i;
-		i++;
-		graph = graph->next;
-	}
-}
-
 void	arr_dop(int **path, int *p, int id)
 {
 	int		i;
@@ -78,98 +37,59 @@ void	clear_visit(t_lem *graph)
 	}
 }
 
-void	print_path(int **road, int p, t_lem *graph)
+int		algo_dop(t_ptr **nbr, t_lem *tmp, int **path, int i)
 {
-	int		i;
-	t_lem	*tmp;
+	int		p;
 
-	printf("\n");
-	while (p >= 0)
+	p = 0;
+	while (path[p] != NULL)
+		p++;
+	p--;
+	if (tmp->flag == 's')
+		clear_visit(tmp);
+	if (size_line(path[p]) > size_line(path[get_min(path)]) + 2
+		&& tmp->flag != 's')
 	{
-		i = 0;
-		printf("#%d\n", p);
-		while (road[p][i] != -1)
-		{
-			tmp = graph;
-			while (tmp != NULL && tmp->ide != road[p][i])
-				tmp = tmp->next;
-			printf("%s ", tmp->id);
-			i++;
-		}
-		printf("\n");
-		p--;
+		path[p][i] = -1;
+		return (-1);
 	}
-	printf("\n");
+	if (size_arr(path) > 97000)
+		return (-1);
+	if ((*nbr)->ptr->flag == 'e')
+		arr_dop(path, &p, (*nbr)->ptr->ide);
+	else
+		path[p][i + 1] = -1;
+	*nbr = (*nbr)->next;
+	return (0);
 }
 
-int		size_line(int *line)
-{
-	int		i;
-
-	i = 0;
-	if (line == NULL)
-		return (0);
-	while (line[i] != -1 && i < 10000)
-		i++;
-	return (i);
-}
-
-int		size_arr(int **arr)
-{
-	int		res;
-
-	res = 0;
-	while (arr[res] != NULL && res < 100000)
-		res++;
-	return (res);
-}
-
-void	find_path(t_lem *graph, int **path, int *p)
+int		*find_path(t_lem *graph, int **path, int *p, int i)
 {
 	t_lem	*tmp;
 	t_ptr	*nbr;
-	int		i;
 
-	i = 0;
 	tmp = graph;
-	if (tmp->flag != 'e')
-		tmp->visited = 1;
+	(tmp->flag != 'e') ? tmp->visited = 1 : 0;
 	nbr = tmp->nbr;
 	while (path[*p][i] != -1)
 		i++;
 	path[*p][i] = graph->ide;
 	if (tmp->flag == 'e')
-	{
-		(*p)++;
-		path[*p] = new_row();
-		return ;
-	}
+		return ((path[++(*p)] = new_row()));
 	while (nbr != NULL)
 	{
 		while (nbr != NULL && nbr->ptr->visited == 1)
 			nbr = nbr->next;
 		if (nbr != NULL && nbr->ptr != NULL)
 		{
-			find_path(nbr->ptr, path, p);
-			if (tmp->flag == 's')
-			 	clear_visit(graph);
-			if (size_line(path[*p]) > size_line(path[get_min(path)]) + 2 && graph->flag != 's')
-			{
-				path[*p][i] = -1;
-				return ;
-			}
-			if (size_arr(path) > 97000)
-				return ;
-			if (nbr->ptr->flag == 'e')
-				arr_dop(path, p, nbr->ptr->ide);
-			else
-				path[*p][i + 1] = -1;
-			nbr = nbr->next;
+			find_path(nbr->ptr, path, p, 0);
+			if (algo_dop(&nbr, tmp, path, i) == -1)
+				return (NULL);
 		}
 	}
 	path[*p][i] = -1;
 	graph->visited = 0;
-	return ;
+	return (NULL);
 }
 
 int		**get_path(t_lem *graph)
@@ -188,7 +108,7 @@ int		**get_path(t_lem *graph)
 		tmp = tmp->next;
 	index_graph(graph);
 	road = new_path();
-	find_path(tmp, road, &p);
+	find_path(tmp, road, &p, 0);
 	while (road[j] != NULL)
 		j++;
 	free(road[--j]);

@@ -12,6 +12,30 @@
 
 #include "../include/lem.h"
 
+void	write_comments(t_comm **write, char flag)
+{
+	t_comm	*tmp;
+
+	if (flag == 'w')
+		ft_putstr("\x1b[1;31mComments:\x1b[0m\n");
+	while (*write != NULL)
+	{
+		tmp = (*write)->next;
+		if (flag == 'w')
+		{
+			ft_putstr("\x1b[1;4;32m");
+			ft_putstr((*write)->comment);
+			ft_putstr("\x1b[0m");
+			ft_putstr("\n");
+		}
+		free((*write)->comment);
+		(*write)->comment = NULL;
+		free(*write);
+		*write = tmp;
+	}
+	*write = NULL;
+}
+
 int		subtest(char *id, t_lem *graph)
 {
 	int		res;

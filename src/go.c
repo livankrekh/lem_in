@@ -12,13 +12,36 @@
 
 #include "../include/lem.h"
 
+void	map_dop(int **res, t_road *solution, int aints)
+{
+	int		min;
+	int		max;
+	t_road	*tmp;
+	int		i;
+
+	i = 0;
+	min = minimal(solution);
+	max = maximum(solution);
+	while (min <= max && i < aints)
+	{
+		tmp = solution;
+		while (tmp != NULL && i < aints)
+		{
+			if (size_line(tmp->path) == min)
+			{
+				res[i] = copy_path(tmp->path);
+				i++;
+			}
+			tmp = tmp->next;
+		}
+		min++;
+	}
+}
+
 int		**get_map(t_road *solution, int aints, int count_path)
 {
 	int		**res;
 	int		i;
-	int		min;
-	int		max;
-	t_road	*tmp;
 
 	i = 0;
 	res = (int**)malloc(sizeof(int*) * (count_path + 1));
@@ -33,78 +56,41 @@ int		**get_map(t_road *solution, int aints, int count_path)
 			i++;
 		}
 	else
-	{
-		min = minimal(solution);
-		max = maximum(solution);
-		while (min <= max && i < aints)
-		{
-			tmp = solution;
-			while (tmp != NULL && i < aints)
-			{
-				if (size_line(tmp->path) == min)
-				{
-					res[i] = copy_path(tmp->path);
-					i++;
-				}
-				tmp = tmp->next;
-			}
-			min++;
-		}
-	}
+		map_dop(res, solution, aints);
 	return (res);
 }
 
-void	delete_map(int **map)
+void	print_l(int index, int *status, int check, t_lem *graph)
 {
-	int		i;
+	int		finish;
 
-	i = 0;
-	while (map[i] != NULL)
-	{
-		free(map[i]);
-		map[i] = NULL;
-		i++;
-	}
-	free(map);
-	map = NULL;
-}
-
-int		check(int status, int *road)
-{
-	int		i;
-
-	i = 1;
-	while (road[i] != -1)
-	{
-		if (status == road[i])
-			return (road[i + 1]);
-		i++;
-	}
-	return (-1);
-}
-
-char	*find_ide(int ide, t_lem *graph)
-{
+	ft_putstr("\x1b[1;33mL\x1b[0m");
+	ft_putstr("\x1b[32m");
+	ft_putnbr(index + 1);
+	ft_putchar('-');
+	ft_putstr(find_ide(check, graph));
+	ft_putstr("\x1b[0m");
+	ft_putchar(' ');
 	while (graph != NULL)
 	{
-		if (graph->ide == ide)
-			return (graph->id);
+		if (graph->flag == 'e')
+			break ;
 		graph = graph->next;
 	}
-	return (NULL);
+	finish = graph->ide;
+	if (check == finish)
+		status[index] = -2;
+	else
+		status[index] = check;
 }
 
-void	go_go_go(int **map, int aints, t_lem *graph, int finish)
+void	go_go_go(int **map, int aints, t_lem *graph)
 {
 	int		*status;
 	int		index;
 	int		j;
 
-	index = 0;
-	status = (int*)malloc(sizeof(int) * (aints + 1));
-	while (index < aints)
-		status[index++] = -1;
-	status[index] = -3;
+	status = create_status(aints);
 	while (status[aints - 1] != -2)
 	{
 		j = 0;
@@ -114,31 +100,11 @@ void	go_go_go(int **map, int aints, t_lem *graph, int finish)
 			while (status[index] != -1 && status[index] != -3)
 			{
 				if (check(status[index], map[j]) >= 0)
-				{
-					ft_putchar('L');
-					ft_putnbr(index + 1);
-					ft_putchar('-');
-					ft_putstr(find_ide(check(status[index], map[j]), graph));
-					ft_putchar(' ');
-					if (check(status[index], map[j]) == finish)
-						status[index] = -2;
-					else
-						status[index] = check(status[index], map[j]);
-				}
+					print_l(index, status, check(status[index], map[j]), graph);
 				index++;
 			}
 			if (status[index] == -1)
-			{
-				ft_putchar('L');
-				ft_putnbr(index + 1);
-				ft_putchar('-');
-				ft_putstr(find_ide(map[j][1], graph));
-				ft_putchar(' ');
-				if (map[j][1] == finish)
-					status[index] = -2;
-				else
-					status[index] = map[j][1];
-			}
+				print_l(index, status, map[j][1], graph);
 			j++;
 		}
 		ft_putchar('\n');
@@ -147,15 +113,13 @@ void	go_go_go(int **map, int aints, t_lem *graph, int finish)
 	status = NULL;
 }
 
-void	go_path(t_road *solution, int aints, int count_path, t_lem *graph)
+void	go_path(t_road *solution, int aints, int count, t_lem *graph)
 {
 	int		**map;
-	int		finish;
 	int		i;
-	
+
 	i = 0;
-	map = get_map(solution, aints, count_path);
-	finish = map[0][size_line(map[0]) - 1];
-	go_go_go(map, aints, graph, finish);
+	map = get_map(solution, aints, count);
+	go_go_go(map, aints, graph);
 	delete_map(map);
 }
