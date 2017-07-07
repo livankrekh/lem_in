@@ -90,6 +90,7 @@ int		main(void)
 		write_comments(&write, 'd');
 		return (0);
 	}
+	index_graph(graph);
 	if (test(graph) == 1)
 	{
 		ft_putstr("\x1b[1;31mError\x1b[0m\n");

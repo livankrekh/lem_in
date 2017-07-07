@@ -18,8 +18,8 @@ t_lem	*create_graph(void)
 
 	res = (t_lem*)malloc(sizeof(t_lem));
 	res->id = NULL;
-	res->x = -1;
-	res->y = -1;
+	res->x = 0;
+	res->y = 0;
 	res->nbr = NULL;
 	res->visited = 0;
 	res->flag = '0';
@@ -53,8 +53,10 @@ int		elem_write(char **tmp, t_lem *graph, int res)
 		return (-2);
 	graph->id = ft_strnew(ft_strlen(tmp2[0]));
 	ft_strcpy(graph->id, tmp2[0]);
-	graph->x = (is_exist(tmp2, 1) == 1) ? ft_atoi(tmp2[1]) : 0;
-	graph->y = (is_exist(tmp2, 2) == 1) ? ft_atoi(tmp2[2]) : 0;
+	if (coord_test(tmp2[1], tmp2[2]) == 0)
+		return (-2);
+	graph->x = (is_exist(tmp2, 1) == 1) ? ft_atoi(tmp2[1]) : -1;
+	graph->y = (is_exist(tmp2, 2) == 1) ? ft_atoi(tmp2[2]) : -1;
 	graph->nbr = NULL;
 	graph->visited = 0;
 	graph->flag = (graph->flag != 's' && graph->flag != 'e')
@@ -88,13 +90,19 @@ int		parse_dop_dohuia(char **tmp, t_lem **graph, t_lem **s, int res)
 {
 	int		status;
 
-	status = 0;
+	status = 1;
 	if ((*tmp)[0] != '\0' && ft_strchr(*tmp, ' '))
 	{
+		if ((*tmp)[0] == 'L')
+			return (-2);
 		if ((status = elem_write(tmp, *graph, res)) == -2)
 			return (status);
 	}
-	else
+	else if (!ft_strchr(*tmp, '-'))
+	{
+		if (!ft_strchr(*tmp, ' '))
+			return (-2);
 		parse_else(graph, s);
+	}
 	return (status);
 }

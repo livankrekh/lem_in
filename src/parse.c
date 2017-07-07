@@ -50,6 +50,8 @@ int		parse_megadop(char **tmp, t_comm **write, int *status, t_lem *graph)
 {
 	t_comm	*comm;
 
+	if ((*tmp)[0] == '\0')
+		return (-2);
 	if ((*tmp)[0] == '#' && (*tmp)[1] == '#')
 	{
 		graph->flag = (ft_strstr(*tmp, "start") ||
@@ -67,11 +69,9 @@ int		parse_megadop(char **tmp, t_comm **write, int *status, t_lem *graph)
 			comm->next = include_comment(*tmp);
 		}
 	}
-	if ((*tmp)[0] == '\0')
-		return (-2);
 	free(*tmp);
 	*status = get_next_line(0, tmp);
-	return (0);
+	return (1);
 }
 
 t_lem	*parse(t_comm **write, int res, int status, char *tmp)
@@ -87,7 +87,7 @@ t_lem	*parse(t_comm **write, int res, int status, char *tmp)
 	graph = start;
 	free(tmp);
 	status = get_next_line(0, &tmp);
-	while (ft_strchr(tmp, ' ') || (tmp[0] == '#'))
+	while (ft_strchr(tmp, ' ') || tmp[0] == '#')
 	{
 		mem_alloc(&graph, &start);
 		while (tmp[0] == '#' || tmp[0] == '\0')
@@ -96,9 +96,9 @@ t_lem	*parse(t_comm **write, int res, int status, char *tmp)
 		if ((status = parse_dop_dohuia(&tmp, &graph, &start, res)) == -2)
 			return (NULL);
 	}
-	if (start != NULL && graph != NULL)
-		graph->next = NULL;
+	if (!ft_strchr(tmp, '-') && tmp[0] != '#')
+		return (NULL);
 	if (start != NULL && status == 1)
-		parse_dop(&start, tmp);
+		parse_dop(&start, tmp, write);
 	return (start);
 }

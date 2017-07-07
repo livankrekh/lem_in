@@ -81,7 +81,7 @@ t_lem			*parse(t_comm **write, int res, int status, char *tmp);
 void			write_comments(t_comm **write, char flag);
 int				parse_dop_dohuia(char **tmp, t_lem **graph, t_lem **s, int res);
 void			mem_alloc(t_lem **graph, t_lem **start);
-void			parse_dop(t_lem **graph, char *tmp);
+void			parse_dop(t_lem **graph, char *tmp, t_comm **write);
 t_lem			*get_elem(t_lem *graph, char *id);
 void			delete_split(char **split);
 int				is_exist(char **arr, int i);
@@ -89,5 +89,10 @@ int				**new_path(void);
 int				*new_row(void);
 int				size_arr(int **arr);
 void			index_graph(t_lem *graph);
+t_comm			*include_comment(char *tmp);
+int				redublication(t_lem *elem1, t_lem *elem2);
+int				coord_test(char *tmp1, char *tmp2);
+int				subtest(char *id, t_lem *graph);
+void			write_comments(t_comm **write, char flag);
 
 #endif

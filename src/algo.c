@@ -106,7 +106,6 @@ int		**get_path(t_lem *graph)
 	p = 0;
 	while (tmp != NULL && tmp->flag != 's')
 		tmp = tmp->next;
-	index_graph(graph);
 	road = new_path();
 	find_path(tmp, road, &p, 0);
 	while (road[j] != NULL)

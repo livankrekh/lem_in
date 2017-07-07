@@ -12,42 +12,16 @@
 
 #include "../include/lem.h"
 
-void	write_comments(t_comm **write, char flag)
+int		test_coord(t_lem *tmp, t_lem *graph)
 {
-	t_comm	*tmp;
-
-	if (flag == 'w')
-		ft_putstr("\x1b[1;31mComments:\x1b[0m\n");
-	while (*write != NULL)
-	{
-		tmp = (*write)->next;
-		if (flag == 'w')
-		{
-			ft_putstr("\x1b[1;4;32m");
-			ft_putstr((*write)->comment);
-			ft_putstr("\x1b[0m");
-			ft_putstr("\n");
-		}
-		free((*write)->comment);
-		(*write)->comment = NULL;
-		free(*write);
-		*write = tmp;
-	}
-	*write = NULL;
-}
-
-int		subtest(char *id, t_lem *graph)
-{
-	int		res;
-
-	res = 0;
 	while (graph != NULL)
 	{
-		if (!ft_strcmp(id, graph->id))
-			res++;
+		if (graph->ide != tmp->ide)
+			if (graph->x == tmp->x && graph->y == tmp->y)
+				return (1);
 		graph = graph->next;
 	}
-	return (res);
+	return (0);
 }
 
 int		test3(t_lem *graph)
@@ -67,6 +41,8 @@ int		test3(t_lem *graph)
 		if (ft_strchr(tmp->id, '-'))
 			return (1);
 		if (tmp->flag == 'e' && tmp->nbr == NULL)
+			return (1);
+		if (test_coord(tmp, graph) == 1)
 			return (1);
 		tmp = tmp->next;
 	}
@@ -91,11 +67,41 @@ int		test2(t_lem *graph)
 		if (tmp->flag == 's')
 			if (tmp->aints < 1)
 				return (1);
+		if (tmp->id == NULL)
+			break ;
 		if (tmp->id[0] == '#')
 			return (1);
 		tmp = tmp->next;
 	}
 	return (test3(graph));
+}
+
+void	test_graph(t_lem **graph)
+{
+	t_lem *tmp;
+	t_lem *tmp2;
+
+	tmp = *graph;
+	tmp2 = NULL;
+	while (tmp != NULL)
+	{
+		if (tmp->id == NULL)
+		{
+			if (tmp2 == NULL)
+			{
+				free(*graph);
+				*graph = NULL;
+			}
+			else
+			{
+				tmp2->next = tmp->next;
+				free(tmp);
+				tmp = tmp2;
+			}
+		}
+		tmp2 = tmp;
+		tmp = tmp->next;
+	}
 }
 
 int		test(t_lem *graph)
@@ -105,6 +111,7 @@ int		test(t_lem *graph)
 
 	prov = 0;
 	ptr = graph;
+	test_graph(&graph);
 	while (ptr != NULL)
 	{
 		if (ptr->flag == 's')
