@@ -76,34 +76,6 @@ int		test2(t_lem *graph)
 	return (test3(graph));
 }
 
-void	test_graph(t_lem **graph)
-{
-	t_lem *tmp;
-	t_lem *tmp2;
-
-	tmp = *graph;
-	tmp2 = NULL;
-	while (tmp != NULL)
-	{
-		if (tmp->id == NULL)
-		{
-			if (tmp2 == NULL)
-			{
-				free(*graph);
-				*graph = NULL;
-			}
-			else
-			{
-				tmp2->next = tmp->next;
-				free(tmp);
-				tmp = tmp2;
-			}
-		}
-		tmp2 = tmp;
-		tmp = tmp->next;
-	}
-}
-
 int		test(t_lem *graph)
 {
 	int		prov;
@@ -111,7 +83,6 @@ int		test(t_lem *graph)
 
 	prov = 0;
 	ptr = graph;
-	test_graph(&graph);
 	while (ptr != NULL)
 	{
 		if (ptr->flag == 's')

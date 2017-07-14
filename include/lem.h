@@ -56,6 +56,7 @@ struct			s_group
 struct			s_comm
 {
 	char		*comment;
+	char		flag;
 	t_comm		*next;
 };
 
@@ -79,7 +80,7 @@ t_road			*get_solution(t_group *list, int *shortest, int aints, int i);
 void			include_group(int **path, int i, t_group **curr, int size);
 t_lem			*parse(t_comm **write, int res, int status, char *tmp);
 void			write_comments(t_comm **write, char flag);
-int				parse_dop_dohuia(char **tmp, t_lem **graph, t_lem **s, int res);
+int				parse_dop_dohuia(char **tmp, t_lem **s, int res, t_comm **w);
 void			mem_alloc(t_lem **graph, t_lem **start);
 void			parse_dop(t_lem **graph, char *tmp, t_comm **write);
 t_lem			*get_elem(t_lem *graph, char *id);
@@ -94,5 +95,6 @@ int				redublication(t_lem *elem1, t_lem *elem2);
 int				coord_test(char *tmp1, char *tmp2);
 int				subtest(char *id, t_lem *graph);
 void			write_comments(t_comm **write, char flag);
+int				gnl_mod(int fd, char **tmp, t_comm **write);
 
 #endif

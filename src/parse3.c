@@ -58,10 +58,12 @@ void	include_ptr(t_lem **elem1, t_lem **elem2)
 	ptr->next = NULL;
 }
 
-void	parse_comment(t_comm **write, char **tmp)
+int		parse_comment(t_comm **write, char **tmp)
 {
 	t_comm	*comm;
 
+	if (tmp == NULL || tmp[0] == '\0')
+		return (0);
 	if (*write == NULL)
 		*write = include_comment(*tmp);
 	else
@@ -71,8 +73,8 @@ void	parse_comment(t_comm **write, char **tmp)
 			comm = comm->next;
 		comm->next = include_comment(*tmp);
 	}
-	free(*tmp);
-	get_next_line(0, tmp);
+	ft_strdel(tmp);
+	return (gnl_mod(0, tmp, write));
 }
 
 void	parse_dop(t_lem **graph, char *tmp, t_comm **write)
@@ -80,13 +82,16 @@ void	parse_dop(t_lem **graph, char *tmp, t_comm **write)
 	t_lem	*elem1;
 	t_lem	*elem2;
 	char	**tmp2;
+	int		status;
 
-	while (tmp && *graph && tmp[0] != '\0' &&
+	status = 1;
+	while (tmp && *graph && status && tmp[0] != '\0' &&
 		(ft_strchr(tmp, '-') || tmp[0] == '#'))
 	{
 		while (tmp[0] == '#')
-			parse_comment(write, &tmp);
-		if (ft_strchr(tmp, '-')[1] == '\0')
+			if ((status = parse_comment(write, &tmp)) <= 0)
+				return ;
+		if ((ft_strchr(tmp, '-') && ft_strchr(tmp, '-')[1] == '\0') || tmp[0] == '\0')
 			return ;
 		tmp2 = ft_strsplit(tmp, '-');
 		elem1 = get_elem(*graph, tmp2[0]);
@@ -95,9 +100,8 @@ void	parse_dop(t_lem **graph, char *tmp, t_comm **write)
 			return ;
 		if (redublication(elem1, elem2) == 0)
 			include_ptr(&elem1, &elem2);
-		free(tmp);
-		tmp = NULL;
+		ft_strdel(&tmp);
 		delete_split(tmp2);
-		get_next_line(0, &tmp);
+		status = gnl_mod(0, &tmp, write);
 	}
 }

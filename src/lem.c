@@ -29,13 +29,16 @@ void	delete_graph(t_lem **graph)
 {
 	t_lem	*tmp;
 
+	tmp = *graph;
 	while (*graph != NULL)
 	{
 		tmp = (*graph)->next;
-		free((*graph)->id);
+		if ((*graph)->id != NULL)
+			free((*graph)->id);
 		(*graph)->id = NULL;
 		delete_nbr(&((*graph)->nbr));
-		free((*graph));
+		if (*graph != NULL)
+			free((*graph));
 		*graph = tmp;
 	}
 }
@@ -59,14 +62,14 @@ void	main_dop(t_lem **graph, t_comm **write, int **path)
 {
 	t_lem	*tmp;
 
-	if (*write != NULL)
-		write_comments(write, 'w');
 	path = get_path(*graph);
 	if (size_line(path[0]) < 2)
 	{
-		ft_putstr("\x1b[1;31mError\x1b[0m\n");
+		ft_putstr("\x1b[1;31mERROR\x1b[0m\n");
 		return ;
 	}
+	if (*write != NULL)
+		write_comments(write, 'w');
 	tmp = *graph;
 	while (tmp->flag != 's' && tmp != NULL)
 		tmp = tmp->next;
@@ -85,7 +88,7 @@ int		main(void)
 	write = NULL;
 	if ((graph = parse(&write, 0, 0, NULL)) == NULL)
 	{
-		ft_putstr("\x1b[1;31mError\x1b[0m\n");
+		ft_putstr("\x1b[1;31mERROR\x1b[0m\n");
 		delete_graph(&graph);
 		write_comments(&write, 'd');
 		return (0);
@@ -93,7 +96,7 @@ int		main(void)
 	index_graph(graph);
 	if (test(graph) == 1)
 	{
-		ft_putstr("\x1b[1;31mError\x1b[0m\n");
+		ft_putstr("\x1b[1;31mERROR\x1b[0m\n");
 		delete_graph(&graph);
 		write_comments(&write, 'd');
 		return (0);
