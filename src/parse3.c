@@ -85,8 +85,8 @@ void	parse_dop(t_lem **graph, char *tmp, t_comm **write)
 	int		status;
 
 	status = 1;
-	while (tmp && *graph && status && tmp[0] != '\0' &&
-		(ft_strchr(tmp, '-') || tmp[0] == '#'))
+	while (tmp && *graph && status && ft_strlen(tmp) != 0 &&
+		(ft_strchr(tmp, '-') || ft_strnstr(tmp, "#", 1)))
 	{
 		while (tmp[0] == '#')
 			if ((status = parse_comment(write, &tmp)) <= 0)

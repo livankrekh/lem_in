@@ -35,6 +35,7 @@ int		test3(t_lem *graph)
 			return (1);
 		tmp = tmp->next;
 	}
+
 	tmp = graph;
 	while (tmp != NULL)
 	{

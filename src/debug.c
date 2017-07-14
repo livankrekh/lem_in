@@ -42,6 +42,22 @@ int		gnl_mod(int fd, char **tmp, t_comm **write)
 	return (status);
 }
 
+void	write_color(char *text, char flag)
+{
+	if (flag == 'c')
+	{
+		ft_putstr("\x1b[1;4;32m");
+		ft_putstr(text);
+		ft_putstr("\x1b[0m");
+		ft_putstr("\n");
+	}
+	else
+	{
+		ft_putstr(text);
+		ft_putstr("\n");
+	}
+}
+
 void	write_comments(t_comm **write, char flag)
 {
 	t_comm	*tmp;
@@ -51,18 +67,12 @@ void	write_comments(t_comm **write, char flag)
 	while (*write != NULL)
 	{
 		tmp = (*write)->next;
-		if ((*write)->flag == 'm' && ((*write)->comment[0] != '#' || (*write)->comment[1] == '#') && flag == 'w')
-		{
-			ft_putstr((*write)->comment);
-			ft_putstr("\n");
-		}
+		if ((*write)->flag == 'm' && ((ft_strnstr((*write)->comment, "##", 2)
+			&& !ft_strnstr((*write)->comment, "###", 3))
+			|| !ft_strnstr((*write)->comment, "#", 1)) && flag == 'w')
+			write_color((*write)->comment, 'm');
 		else if ((*write)->flag == 'c' && flag == 'w')
-		{
-			ft_putstr("\x1b[1;4;32m");
-			ft_putstr((*write)->comment);
-			ft_putstr("\x1b[0m");
-			ft_putstr("\n");
-		}
+			write_color((*write)->comment, 'c');
 		free((*write)->comment);
 		(*write)->comment = NULL;
 		free(*write);

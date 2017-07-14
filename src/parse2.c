@@ -18,8 +18,8 @@ t_lem	*create_graph(void)
 
 	res = (t_lem*)malloc(sizeof(t_lem));
 	res->id = NULL;
-	res->x = 0;
-	res->y = 0;
+	res->x = -1;
+	res->y = -1;
 	res->nbr = NULL;
 	res->visited = 0;
 	res->flag = '0';
@@ -144,16 +144,17 @@ int		parse_dop_dohuia(char **tmp, t_lem **s, int res, t_comm **write)
 		while (graph->next != NULL)
 			graph = graph->next;
 	}
-	if ((*tmp)[0] != '\0' && ft_strchr(*tmp, ' '))
+	if (ft_strlen(*tmp) != 0 && ft_strchr(*tmp, ' ') && !ft_strnstr(*tmp, "#", 1))
 	{
-		if (ft_strnstr("L", *tmp, 1) || ft_strchr(*tmp, '-'))
+		if (ft_strnstr(*tmp, "L", 1) || ft_strchr(*tmp, '-'))
 			return (-2);
-		if ((status = elem_write(tmp, graph, res, write)) == -2)
-			return (status);
+		return (elem_write(tmp, graph, res, write));
 	}
+	else if (ft_strnstr(*tmp, "#", 1))
+		return (-2);
 	else if (!ft_strchr(*tmp, '-'))
 	{
-		if (!ft_strchr(*tmp, ' '))
+		if (ft_strchr(*tmp, ' '))
 			return (-2);
 		parse_else(&graph, s);
 	}

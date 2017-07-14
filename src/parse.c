@@ -88,25 +88,31 @@ int		parse_megadop(char **tmp, t_comm **write, int *status, t_lem *graph)
 
 	if ((*tmp)[0] == '\0')
 		return (-2);
-	if ((*tmp)[0] == '#' && (*tmp)[1] == '#')
+	while (ft_strnstr(*tmp, "#", 1))
 	{
-		graph->flag = (ft_strstr(*tmp, "start") ||
-			ft_strstr((*tmp), "end")) ? (*tmp)[2] : '\0';
-	}
-	else if ((*tmp)[0] == '#' && (*tmp)[1] != '#')
-	{
-		if (*write == NULL)
-			*write = include_comment(*tmp);
+		if (ft_strnstr(*tmp, "##", 2) && !ft_strnstr(*tmp, "###", 3))
+		{
+			graph->flag = (ft_strstr(*tmp, "start") ||
+				ft_strstr((*tmp), "end")) ? (*tmp)[2] : '\0';
+			ft_strdel(tmp);
+			*status = gnl_mod(0, tmp, write);
+			return (1);
+		}
 		else
 		{
-			comm = *write;
-			while (comm->next != NULL)
-				comm = comm->next;
-			comm->next = include_comment(*tmp);
+			if (*write == NULL)
+				*write = include_comment(*tmp);
+			else
+			{
+				comm = *write;
+				while (comm->next != NULL)
+					comm = comm->next;
+				comm->next = include_comment(*tmp);
+			}
 		}
+		ft_strdel(tmp);
+		*status = gnl_mod(0, tmp, write);
 	}
-	ft_strdel(tmp);
-	*status = gnl_mod(0, tmp, write);
 	return (1);
 }
 
@@ -140,16 +146,16 @@ t_lem	*parse(t_comm **write, int res, int status, char *tmp)
 	graph = start;
 	free(tmp);
 	status = gnl_mod(0, &tmp, write);
-	while ((ft_strchr(tmp, ' ') || tmp[0] == '#') && status)
+	while ((ft_strchr(tmp, ' ') || ft_strnstr(tmp, "#", 1)) && status)
 	{
 		mem_alloc(&graph, &start);
-		while (tmp[0] == '#' || tmp[0] == '\0')
+		if (ft_strnstr(tmp, "#", 1) || ft_strlen(tmp) == 0)
 			if (parse_megadop(&tmp, write, &status, graph) == -2)
 				return (start);
 		if ((status = parse_dop_dohuia(&tmp, &start, res, write)) < 0)
 			return (NULL);
 	}
-	if (!ft_strchr(tmp, '-') && tmp[0] != '#')
+	if (!ft_strchr(tmp, '-') && !ft_strnstr(tmp, "#", 1))
 		return (NULL);
 	if (start != NULL && status == 1)
 		parse_dop(&start, tmp, write);
