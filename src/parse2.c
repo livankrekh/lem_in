@@ -97,41 +97,6 @@ void	parse_else(t_lem **graph, t_lem **start)
 	}
 }
 
-// int		parse_dop_dohuia(char **tmp, t_lem **s, int res, t_comm **write)
-// {
-// 	t_lem	*graph;
-
-// 	graph = *s;
-// 	if (ft_strlen(*tmp) == 0)
-// 		return (0);
-// 	if (graph != NULL)
-// 	{
-// 		while (graph->next != NULL)
-// 			graph = graph->next;
-// 		if ((*tmp)[0] == 'L' ||
-// 			(ft_strchr(*tmp, '-') && ft_strchr(*tmp, ' ')))
-// 			return (-2);
-// 		else if (ft_strchr(*tmp, '-') && !ft_strchr(*tmp, ' '))
-// 			return (0);
-// 		else if (!ft_strchr(*tmp, '-') && !ft_strchr(*tmp, ' '))
-// 			return (-2);
-// 		if ((graph->flag == 's' || graph->flag == 'e') && graph->id == NULL)
-// 		{
-// 			if (ft_strchr(*tmp, '-') || !ft_strchr(*tmp, ' ') || ft_strnstr("#", *tmp, 1))
-// 				return (-2);
-// 			return (elem_write(tmp, graph, res, write));
-// 		}
-// 		mem_alloc(&graph, s);
-// 		return (elem_write(tmp, graph, res, write));
-// 	}
-// 	else
-// 	{
-// 		mem_alloc(&graph, s);
-// 		return (elem_write(tmp, graph, res, write));
-// 	}
-// 	return (1);
-// }
-
 int		parse_dop_dohuia(char **tmp, t_lem **s, int res, t_comm **write)
 {
 	int		status;
@@ -140,11 +105,10 @@ int		parse_dop_dohuia(char **tmp, t_lem **s, int res, t_comm **write)
 	status = 1;
 	graph = *s;
 	if (graph != NULL)
-	{
 		while (graph->next != NULL)
 			graph = graph->next;
-	}
-	if (ft_strlen(*tmp) != 0 && ft_strchr(*tmp, ' ') && !ft_strnstr(*tmp, "#", 1))
+	if (ft_strlen(*tmp) != 0 && ft_strchr(*tmp, ' ') &&
+		!ft_strnstr(*tmp, "#", 1))
 	{
 		if (ft_strnstr(*tmp, "L", 1) || ft_strchr(*tmp, '-'))
 			return (-2);

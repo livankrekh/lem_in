@@ -96,5 +96,6 @@ int				coord_test(char *tmp1, char *tmp2);
 int				subtest(char *id, t_lem *graph);
 void			write_comments(t_comm **write, char flag);
 int				gnl_mod(int fd, char **tmp, t_comm **write);
+void			mem_debug(t_comm **write, char **tmp);
 
 #endif

@@ -12,36 +12,6 @@
 
 #include "../include/lem.h"
 
-int		gnl_mod(int fd, char **tmp, t_comm **write)
-{
-	t_comm	*tmp_comm;
-	int		status;
-
-	tmp_comm = *write;
-	if ((status = get_next_line(fd, tmp)) <= 0)
-		return (status);
-	if (*write == NULL)
-	{
-		*write = (t_comm*)malloc(sizeof(t_comm));
-		(*write)->comment = ft_strnew(ft_strlen(*tmp));
-		ft_strncpy((*write)->comment, *tmp, ft_strlen(*tmp));
-		(*write)->flag = 'm';
-		(*write)->next = NULL;
-	}
-	else
-	{
-		while (tmp_comm->next != NULL)
-			tmp_comm = tmp_comm->next;
-		tmp_comm->next = (t_comm*)malloc(sizeof(t_comm));
-		tmp_comm = tmp_comm->next;
-		tmp_comm->comment = ft_strnew(ft_strlen(*tmp));
-		ft_strncpy(tmp_comm->comment, *tmp, ft_strlen(*tmp));
-		tmp_comm->flag = 'm';
-		tmp_comm->next = NULL;
-	}
-	return (status);
-}
-
 void	write_color(char *text, char flag)
 {
 	if (flag == 'c')

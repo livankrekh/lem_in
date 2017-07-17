@@ -91,7 +91,7 @@ void	parse_dop(t_lem **graph, char *tmp, t_comm **write)
 		while (tmp[0] == '#')
 			if ((status = parse_comment(write, &tmp)) <= 0)
 				return ;
-		if ((ft_strchr(tmp, '-') && ft_strchr(tmp, '-')[1] == '\0') || tmp[0] == '\0')
+		if (ft_strlen(&(ft_strchr(tmp, '-')[1])) == 0 || tmp[0] == '\0')
 			return ;
 		tmp2 = ft_strsplit(tmp, '-');
 		elem1 = get_elem(*graph, tmp2[0]);

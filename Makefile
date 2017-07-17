@@ -14,7 +14,7 @@ NAME1 = lem-in
 CC = gcc
 SRC = src/lem.c src/valid.c src/algo.c src/action.c src/go.c src/go_dop.c \
 		src/tools.c src/solution.c src/groups.c src/parse.c src/parse2.c \
-		src/parse3.c src/algo2.c src/debug.c
+		src/parse3.c src/algo2.c src/debug.c src/debug2.c
 LIB = libft/libft.a
 FLAGS = -Wall -Wextra -Werror
 
